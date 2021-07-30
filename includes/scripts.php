@@ -32,3 +32,4 @@
     <script src="../assets/dist/js/demo.js"></script>
     <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
     <script src="../assets/dist/js/pages/dashboard.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.2/min/dropzone.min.js" referrerpolicy="no-referrer"></script>

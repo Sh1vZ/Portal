@@ -34,4 +34,5 @@ PHPWord
 Jquery (ajax) => progress from export to mail
 Additionally create a REST API which calls info from a simple NAME, ADDRESS and CONTACT NR table (you can create it yourself). You can use one of the scripts to call the API and display the info.
 
-Gaarne een bevestiging sturen van ontvangst van deze mail.
+
+  https://stackoverflow.com/questions/46861855/how-to-read-separate-lines-from-a-file-in-php-fopen
