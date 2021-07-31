@@ -1,7 +1,8 @@
 {
     "require": {
         "illuminate/database": "^8.52",
-        "illuminate/events": "^8.52"
+        "illuminate/events": "^8.52",
+        "phpoffice/phpspreadsheet": "^1.18"
     },
     "autoload": {
         "files": ["./config/dbConfig.php"],
