@@ -1,7 +1,7 @@
 <?php
 
 require '../vendor/autoload.php';
-
+session_start();
 if (isset($_POST['insertData'])) {
   $empty = false;
   $uname = !empty($_POST['uname']) ? $_POST["uname"] : $empty = true;
@@ -12,6 +12,7 @@ if (isset($_POST['insertData'])) {
   } else {
       $record = User::insertOrIgnore(['username' => $uname, 'password' => password_hash($pwd, PASSWORD_DEFAULT)]);
       if ($record) {
+        Audit::create(['username'=>$_SESSION['username'],'role'=>$_SESSION['role'],'action'=>"Inserted user $uname"]);
         header('Location:../views/Users.php?msg=insertSuccess');
       }else{
         header('Location:../views/Users.php?msg=userExists');
@@ -37,9 +38,11 @@ if (isset($_POST['updateData'])) {
   if ($empty == true) {
     header('Location:../views/Users.php?msg=emptyFields');
   } else {
+    $uname = User::find($rid)->first();
     $count = User::where('username', $uname)->count();
       $record = User::where('id', $rid)->update(['password' => password_hash($pwd, PASSWORD_DEFAULT)]);
       if ($record) {
+        Audit::create(['username'=>$_SESSION['username'],'role'=>$_SESSION['role'],'action'=>'Updated user '.$uname['username'].'']);
         header('Location:../views/Users.php?msg=updateSuccess');
       }
   }
@@ -47,8 +50,10 @@ if (isset($_POST['updateData'])) {
 
 if(isset($_GET['delete'])){
   $id=$_GET['delete'];
+  $uname = User::find($id)->first();
   $res=User::where('id',$id)->delete();
   if($res){
+    Audit::create(['username'=>$_SESSION['username'],'role'=>$_SESSION['role'],'action'=>'Deleted user '.$uname['username'].'']);
     header('Location:../views/Users.php?msg=deleteSuccess');
   }
 }

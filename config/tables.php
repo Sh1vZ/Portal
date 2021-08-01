@@ -20,6 +20,15 @@ Capsule::schema()->create('users', function ($table) {
   $table->timestamps();
 });
 
+Capsule::schema()->dropIfExists('audits');
+Capsule::schema()->create('audits', function ($table) {
+  $table->increments('id');
+  $table->string('username');
+  $table->string('role');
+  $table->string('action');
+  $table->timestamps();
+});
+
 Capsule::schema()->dropIfExists('data');
 Capsule::schema()->create('data', function ($table) {
   $table->increments('id');

@@ -1,7 +1,7 @@
 <?php
 
 require "../vendor/autoload.php";
-
+session_start();
 function formatDate($date)
 {
   $fdate = date('Y-m-d', strtotime(str_replace('-', '/', $date)));
@@ -24,6 +24,7 @@ if (isset($_POST['insertData'])) {
   } else {
     $record = Data::create(['idRecord' => $id, 'code' => $code, 'startDate' => $dateStart, 'endDate' => $dateEnd, 'nr1' => $nr1, 'nr2' => $nr2, 'expireDate' => $dateExp]);
     if ($record) {
+      Audit::create(['username'=>$_SESSION['username'],'role'=>$_SESSION['role'],'action'=>'Created a data record.']);
       header('Location:../views/Home.php?msg=insertSuccess');
     }
   }
@@ -56,6 +57,7 @@ if (isset($_POST['updateData'])) {
   } else {
     $record = Data::where('id', $rid)->update(['idRecord' => $id, 'code' => $code, 'startDate' => $dateStart, 'endDate' => $dateEnd, 'nr1' => $nr1, 'nr2' => $nr2, 'expireDate' => $dateExp]);
     if ($record) {
+      Audit::create(['username'=>$_SESSION['username'],'role'=>$_SESSION['role'],'action'=>'Updated a data record.']);
       header('Location:../views/Home.php?msg=updateSuccess');
     }
   }
@@ -65,6 +67,7 @@ if(isset($_GET['delete'])){
   $id=$_GET['delete'];
   $res=Data::where('id',$id)->delete();
   if($res){
+    Audit::create(['username'=>$_SESSION['username'],'role'=>$_SESSION['role'],'action'=>'Deleted a data record.']);
     header('Location:../views/Home.php?msg=deleteSuccess');
   }
 }

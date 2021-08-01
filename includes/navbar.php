@@ -16,7 +16,7 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="../controllers/auth.php?action=logout" role="button">
-                        <i class="fas fa-th-large"></i>
+                    <i class="fas fa-sign-out-alt"></i>                    
                     </a>
                 </li>
             </ul>

@@ -23,15 +23,18 @@ function insertData($file)
   $status = 0;
 
   if ($handle) {
+    $a=0;
     while (($line = fgets($handle)) !== false) {
       $arrData = explode("|", $line);
       if (!empty($arrData)) {
+        $tot=$a++;
         $record = Data::create(['idRecord' => $arrData[0], 'code' => $arrData[1], 'startDate' => formatDate($arrData[2]), 'endDate' => formatDate($arrData[3]), 'nr1' => $arrData[4], 'nr2' => $arrData[6], 'expireDate' => formatDate($arrData[7])]);
         if ($record) {
           $status = 1;
         }
       }
     }
+    Audit::create(['username'=>$_SESSION['username'],'role'=>$_SESSION['role'],'action'=>'Uploaded '.$a.' records']);
     fclose($handle);
   } else {
     $status = 0;

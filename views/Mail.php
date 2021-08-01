@@ -18,13 +18,7 @@
         <div class="container-fluid">
           <div class="row mb-2">
             <div class="col-sm-6">
-              <h1>Blank Page</h1>
-            </div>
-            <div class="col-sm-6">
-              <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item"><a href="#">Home</a></li>
-                <li class="breadcrumb-item active">Blank Page</li>
-              </ol>
+              <h1>Mail</h1>
             </div>
           </div>
         </div><!-- /.container-fluid -->
@@ -39,17 +33,23 @@
             <div class="card card-outline card-info">
               <div class="card-header">
                 <h3 class="card-title">
-                  Summernote
+                  Body
                 </h3>
               </div>
               <!-- /.card-header -->
               <div class="card-body">
-                <form action="../controllers/mail.php" method='POST' enctype="multipart/form-data">
+                <form action="../controllers/mail.php" id='mailForm' method='POST' enctype="multipart/form-data">
                   <div class="row">
                     <div class="form-group col-md-12">
                       <label>To:</label>
                       <div class="input-group">
-                        <input type="email" name='adress' id='uname' class="form-control" placeholder="To:">
+                        <input type="email" name='adress' id='mail' class="form-control" placeholder="To:">
+                      </div>
+                    </div>
+                    <div class="form-group col-md-12">
+                      <label>Subject:</label>
+                      <div class="input-group">
+                        <input type="text" name='subj' class="form-control" placeholder="Subject:">
                       </div>
                     </div>
                   </div>
@@ -69,7 +69,7 @@
                     <div class="col-sm-6">
                       <div class="form-group">
                         <label>Mail as:</label>
-                        <select class="form-control" name='type'>
+                        <select class="form-control" name='type' id='type'>
                           <option value='pdf'>PDF</option>
                           <option value='word'>WORD</option>
                           <option value='excel'>EXCEL</option>
@@ -80,19 +80,20 @@
                     </div>
                     <div class="col-md-12">
                       <center>
-                        <button type="submit" name="mail" class="btn btn-primary">Update</button>
+                        <button type="submit" name="mail" id='subBtn' class="btn btn-primary">Mail</button>
+                        <p id='msg'></p>
                       </center>
                       <br>
                     </div>
                 </form>
               </div>
               <div class="card-footer">
-                Mailing as
+                Mailing as testemailformails@gmail.com
               </div>
             </div>
           </div>
           <!-- /.col-->
-          
+
         </div>
         <!-- /.card -->
       </section>
@@ -107,6 +108,34 @@
   <!-- ./wrapper -->
   <?php include "../includes/scripts.php"; ?>
   <script>
+    $(document).ready(function(e) {
+      // Submit form data via Ajax
+      $("#mailForm").on('submit', function(e) {
+        e.preventDefault();
+        const type = $('#type').val();
+        const mail = $('#mail').val();
+        $.ajax({
+          type: 'POST',
+          url: '../controllers/mail.php',
+          data: new FormData(this),
+          contentType: false,
+          cache: false,
+          processData: false,
+          beforeSend: function() {
+            $('#subBtn').attr("disabled", "disabled");
+            $('#msg').html(`Exporting to ${type} and mailing to ${mail}...`);
+            // $('#fupForm').css("opacity",".5");
+          },
+          success: function(response) { //console.log(response);
+            // console.log(response);
+            $('#mailForm')[0].reset();
+            $('#summernote').summernote('reset');
+            $('#msg').html(response);
+            $("#subBtn").removeAttr("disabled");
+          }
+        });
+      });
+    });
     $(function() {
       // Summernote
       $('#summernote').summernote({
@@ -122,7 +151,6 @@
       })
       bsCustomFileInput.init();
     })
-
   </script>
 </body>
 

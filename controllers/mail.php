@@ -1,86 +1,89 @@
 <?php
-require '../vendor/autoload.php';
 
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
+include 'export.php';
+require '../vendor/autoload.php';
+session_start();
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+
 
 function uploadFile($file, $name)
 {
-  $valid_extensions = array('unl');
-  $targetPath = '../uploads/' . $name;
-  $ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
-  if (in_array($ext, $valid_extensions)) {
-    if (move_uploaded_file($file, $targetPath)) {
-      return $name;
-    }
-  } else {
-    echo 'incorrect file';
-  }
+	$valid_extensions = array('unl');
+	$targetPath = '../uploads/' . $name;
+	$ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
+	if (in_array($ext, $valid_extensions)) {
+		if (move_uploaded_file($file, $targetPath)) {
+			return $name;
+		}
+	} else {
+		echo  'Incorrect File';
+	}
 }
 
-
-function exportExcel($file, $type)
+function sendMail($mailto, $body, $subj, $file)
 {
-  $spreadsheet = new Spreadsheet();
-  $sheet = $spreadsheet->getActiveSheet();
-  $sheet->setCellValue('A1', 'ID');
-  $sheet->setCellValue('B1', 'Code');
-  $sheet->setCellValue('C1', 'Start Date');
-  $sheet->setCellValue('D1', 'End Date');
-  $sheet->setCellValue('E1', 'Nr 1');
-  $sheet->setCellValue('F1', 'Percent');
-  $sheet->setCellValue('G1', 'Nr 2');
-  $sheet->setCellValue('H1', 'Expire Date');
-  $handle = fopen('../uploads/' . $file, "r");
-  if ($handle) {
-    $rowCount = 2;
-    while (($line = fgets($handle)) !== false) {
-      $arrData = explode("|", $line);
-      if (!empty($arrData)) {
-        $sheet->setCellValue('A' . $rowCount, $arrData[0]);
-        $sheet->setCellValue('B' . $rowCount, $arrData[1]);
-        $sheet->setCellValue('C' . $rowCount, $arrData[2]);
-        $sheet->setCellValue('D' . $rowCount, $arrData[3]);
-        $sheet->setCellValue('E' . $rowCount, $arrData[4]);
-        $sheet->setCellValue('F' . $rowCount, $arrData[5]);
-        $sheet->setCellValue('G' . $rowCount, $arrData[6]);
-        $sheet->setCellValue('H' . $rowCount, $arrData[7]);
-        $rowCount++;
-      }
-    }
-    if ($type == 'excel') {
-      $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
-      $fileName = $file . '.xlsx';
-      try {
-        $writer->save('../uploads/' . $fileName);
-        echo $fileName;
-      } catch (Exception $e) {
-        echo 'Export Failed';
-      }
-    }
-    if ($type == 'csv') {
-      $writer = new \PhpOffice\PhpSpreadsheet\Writer\Csv($spreadsheet);
-      $fileName = $file . '.csv';
-      try {
-        $writer->save('../uploads/' . $fileName);
-        echo $fileName;
-      } catch (Exception $e) {
-        echo 'Export Failed';
-      }
-    }
+	$mail = new PHPMailer(true);
+	//Enable SMTP debugging.
+	// $mail->SMTPDebug = 3;
+	//Set PHPMailer to use SMTP.
+	$mail->isSMTP();
+	//Set SMTP host name                          
+	$mail->Host = "smtp.gmail.com";
+	//Set this to true if SMTP host requires authentication to send email
+	$mail->SMTPAuth = true;
+	//Provide username and password     
+	$mail->Username = "testemailformails@gmail.com";
+	$mail->Password = "testpasswordformails";
+	//If SMTP requires TLS encryption then set it
+	$mail->SMTPSecure = "tls";
+	//Set TCP port to connect to
+	$mail->Port = 587;
 
-    fclose($handle);
-  } else {
-    echo 'Failed to open file';
-  }
+	$mail->From = "testemailformails@gmail.com";
+
+	$mail->addAddress(strval($mailto));
+	$mail->addAttachment('../uploads/' . $file);
+	$mail->isHTML(true);
+
+	$mail->Subject = strval($subj);
+	$mail->Body = strval($body);
+
+	try {
+		$mail->send();
+		echo "Message has been sent successfully";
+		Audit::create(['username' => $_SESSION['username'], 'role' => $_SESSION['role'], 'action' => "Mailed $file to $mailto"]);
+	} catch (Exception $e) {
+		echo "Mailer Error: " . $mail->ErrorInfo;
+	}
 }
 
-if (isset($_POST['mail'])) {
-  $empty = false;
-  $mail = !empty($_POST['adress']) ? $_POST["adress"] : $empty = true;
-  $body = !empty($_POST['body']) ? $_POST["body"] : $empty = true;
-  $type = !empty($_POST['type']) ? $_POST["type"] : $empty = true;
-  $file = $_FILES['file']['tmp_name'];
-  $name = $_FILES['file']['name'];
-  $filename = uploadFile($file, $name);
-  exportExcel($filename,'csv');
+$empty = false;
+$mail = !empty($_POST['adress']) ? $_POST["adress"] : $empty = true;
+$body = !empty($_POST['body']) ? $_POST["body"] : $empty = true;
+$type = !empty($_POST['type']) ? $_POST["type"] : $empty = true;
+$subj = !empty($_POST['subj']) ? $_POST["subj"] : $empty = true;
+$file = $_FILES['file']['tmp_name'];
+$name = $_FILES['file']['name'];
+$filename = uploadFile($file, $name);
+if ($type == 'excel' or $type == 'csv') {
+	$fileExport = exportExcel($filename, $type);
+	sendMail($mail, $body, $subj, $fileExport);
+	unlink('../uploads/' . $fileExport);
+} elseif ($type == 'pdf') {
+	$fileExport = exportPDF($filename);
+	sendMail($mail, $body, $subj, $fileExport);
+	unlink('../uploads/' . $fileExport);
+} elseif ($type == 'word') {
+	$fileExport = exportWord($filename);
+	sendMail($mail, $body, $subj, $fileExport);
+	unlink('../uploads/' . $fileExport);
+} elseif ($type == 'json') {
+	$fileExport = exportJson($filename);
+	sendMail($mail, $body, $subj, $fileExport);
+	unlink('../uploads/' . $fileExport);
+} else {
+	$empty = true;
 }

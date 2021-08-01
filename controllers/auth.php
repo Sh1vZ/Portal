@@ -15,6 +15,7 @@ if (isset($_POST['login'])) {
       $_SESSION['loggedIn']=true;
       $_SESSION['role']='Admin';
       $_SESSION['id']=$user['id'];
+      $_SESSION['username']=$user['username'];
       header('Location:../views/home.php');
     } else {
       header('Location:../index.php?msg=incorrect password');

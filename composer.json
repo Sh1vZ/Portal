@@ -2,7 +2,10 @@
     "require": {
         "illuminate/database": "^8.52",
         "illuminate/events": "^8.52",
-        "phpoffice/phpspreadsheet": "^1.18"
+        "phpoffice/phpspreadsheet": "^1.18",
+        "mpdf/mpdf": "^8.0",
+        "phpoffice/phpword": "^0.18.2",
+        "phpmailer/phpmailer": "^6.5"
     },
     "autoload": {
         "files": ["./config/dbConfig.php"],
