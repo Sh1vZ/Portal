@@ -2,12 +2,8 @@
 
 include 'export.php';
 require '../vendor/autoload.php';
-session_start();
-
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
-
-
 
 function uploadFile($file, $name)
 {
@@ -42,7 +38,7 @@ function sendMail($mailto, $body, $subj, $file)
 	//Set TCP port to connect to
 	$mail->Port = 587;
 
-	$mail->From = "testemailformails@gmail.com";
+	$mail->setFrom("testemailformails@gmail.com","Test Mailer");
 
 	$mail->addAddress(strval($mailto));
 	$mail->addAttachment('../uploads/' . $file);

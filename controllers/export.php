@@ -1,6 +1,8 @@
 <?php
 
 require '../vendor/autoload.php';
+include 'data.php';
+
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 function exportExcel($file, $type)
