@@ -52,6 +52,14 @@
         						</p>
         					</a>
         				</li>
+        				<li class="nav-item">
+        					<a href="../views/apiCall.php" class="nav-link <?= (basename($_SERVER['PHP_SELF']) == 'apiCall.php' ? 'active' : '') ?>">
+        						<i class="fas fa-envelope-open"></i>
+        						<p>
+        							API
+        						</p>
+        					</a>
+        				</li>
         			</ul>
         		</nav>
         		<!-- /.sidebar-menu -->
