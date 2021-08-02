@@ -64,22 +64,25 @@ $subj = !empty($_POST['subj']) ? $_POST["subj"] : $empty = true;
 $file = $_FILES['file']['tmp_name'];
 $name = $_FILES['file']['name'];
 $filename = uploadFile($file, $name);
-if ($type == 'excel' or $type == 'csv') {
-	$fileExport = exportExcel($filename, $type);
-	sendMail($mail, $body, $subj, $fileExport);
-	unlink('../uploads/' . $fileExport);
-} elseif ($type == 'pdf') {
-	$fileExport = exportPDF($filename);
-	sendMail($mail, $body, $subj, $fileExport);
-	unlink('../uploads/' . $fileExport);
-} elseif ($type == 'word') {
-	$fileExport = exportWord($filename);
-	sendMail($mail, $body, $subj, $fileExport);
-	unlink('../uploads/' . $fileExport);
-} elseif ($type == 'json') {
-	$fileExport = exportJson($filename);
-	sendMail($mail, $body, $subj, $fileExport);
-	unlink('../uploads/' . $fileExport);
-} else {
-	$empty = true;
+if($filename!=''){
+	if ($type == 'excel' or $type == 'csv') {
+		$fileExport = exportExcel($filename, $type);
+		sendMail($mail, $body, $subj, $fileExport);
+		unlink('../uploads/' . $fileExport);
+	} elseif ($type == 'pdf') {
+		$fileExport = exportPDF($filename);
+		sendMail($mail, $body, $subj, $fileExport);
+		unlink('../uploads/' . $fileExport);
+	} elseif ($type == 'word') {
+		$fileExport = exportWord($filename);
+		sendMail($mail, $body, $subj, $fileExport);
+		unlink('../uploads/' . $fileExport);
+	} elseif ($type == 'json') {
+		$fileExport = exportJson($filename);
+		sendMail($mail, $body, $subj, $fileExport);
+		unlink('../uploads/' . $fileExport);
+	} else {
+		$empty = true;
+	}
 }
+

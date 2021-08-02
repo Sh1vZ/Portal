@@ -1,5 +1,4 @@
         <!-- Main Sidebar Container -->
-        <?php session_start() ?>
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
         	<!-- Brand Logo -->
         	<!-- Sidebar -->
@@ -23,26 +22,32 @@
         						</p>
         					</a>
         				</li>
-        				<li class="nav-item">
-        					<a href="../views/Users.php" class="nav-link <?= (basename($_SERVER['PHP_SELF']) == 'Users.php' ? 'active' : '') ?>">
-        						<i class="nav-icon fas fa-users"></i>
-        						<p>
-        							Users
-        						</p>
-        					</a>
-        				</li>
-        				<li class="nav-item">
-        					<a href="../views/Audit.php" class="nav-link <?= (basename($_SERVER['PHP_SELF']) == 'Audit.php' ? 'active' : '') ?>">
-        						<i class="nav-icon fas fa-user-shield"></i>
-        						<p>
-        							Audit
-        						</p>
-        					</a>
-        				</li>
+        				<?php
+								if ($_SESSION['role'] == 'Admin') {
+								?>
+        					<li class="nav-item">
+        						<a href="../views/Users.php" class="nav-link <?= (basename($_SERVER['PHP_SELF']) == 'Users.php' ? 'active' : '') ?>">
+        							<i class="nav-icon fas fa-users"></i>
+        							<p>
+        								Users
+        							</p>
+        						</a>
+        					</li>
+									<li class="nav-item">
+										<a href="../views/Audit.php" class="nav-link <?= (basename($_SERVER['PHP_SELF']) == 'Audit.php' ? 'active' : '') ?>">
+											<i class="nav-icon fas fa-user-shield"></i>
+											<p>
+												Audit
+											</p>
+										</a>
+									</li>
+        				<?php
+								}
+								?>
         				<li class="nav-item">
         					<a href="../views/Mail.php" class="nav-link <?= (basename($_SERVER['PHP_SELF']) == 'Mail.php' ? 'active' : '') ?>">
-									<i class="fas fa-envelope-open"></i>        						
-									<p>
+        						<i class="fas fa-envelope-open"></i>
+        						<p>
         							Mail
         						</p>
         					</a>

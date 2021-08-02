@@ -1,6 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
-
+<?php
+  session_start();
+if (isset($_SESSION)) {
+  if ($_SESSION['loggedIn'] == true) {
+    if ($_SESSION['role'] != 'Admin') {
+      header('Location:forbidden.php');
+    }
+  } else {
+    header('Location:forbidden.php');
+  }
+}
+?>
 <?php include '../includes/head.php'; ?>
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -32,7 +43,7 @@
             <div class="card">
               <div class="card-header">
                 <h3 class="card-title">Data</h3>
-
+								<?php include '../includes/messages.php' ?>
                 <div class="card-tools">
                   <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">Add data</button>
                 </div>
@@ -114,7 +125,7 @@
                         <div class="form-group col-md-12">
                           <label>Password</label>
                           <div class="input-group">
-                            <input data-toggle="password" name='pwd' class="form-control" type="password" placeholder="Enter the password">
+                            <input data-toggle="password" name='pwd' class="form-control" type="password" maxlength="10" placeholder="Enter the password">
                           </div>
                         </div>
                       </div>
@@ -169,7 +180,7 @@
                         <div class="form-group col-md-12">
                           <label>Password</label>
                           <div class="input-group">
-                            <input data-toggle="password" name='pwd' class="form-control" type="password" placeholder="Enter the password">
+                            <input data-toggle="password" name='pwd' class="form-control" type="password" maxlength="10" placeholder="Enter the password">
                           </div>
                         </div>
                       </div>

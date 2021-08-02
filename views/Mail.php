@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
-
+<?php
+  session_start();
+if (isset($_SESSION)) {
+  if ($_SESSION['loggedIn'] != true) {
+    header('Location:forbidden.php');
+  }
+}
+?>
 <?php include '../includes/head.php'; ?>
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -128,7 +135,7 @@
           },
           success: function(response) { //console.log(response);
             // console.log(response);
-            $('#mailForm')[0].reset();
+            // $('#mailForm')[0].reset();
             $('#summernote').summernote('reset');
             $('#msg').html(response);
             $("#subBtn").removeAttr("disabled");

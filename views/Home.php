@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
-
+<?php
+	session_start();
+if (isset($_SESSION)) {
+	if ($_SESSION['loggedIn'] != true) {
+			header('Location:forbidden.php');
+	} 
+}
+?>
 <?php include '../includes/head.php'; ?>
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -32,7 +39,7 @@
 						<div class="card">
 							<div class="card-header">
 								<h3 class="card-title">Data</h3>
-
+								<?php include '../includes/messages.php' ?>
 								<div class="card-tools">
 									<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">Add data</button>
 								</div>
@@ -74,7 +81,13 @@
 													<td><?= $dat['expireDate'] ?></td>
 													<td>
 														<button class='btn btn-primary' onclick="getData(<?= $dat['id'] ?>)">Edit</button>
-														<a href="../controllers/data.php?delete=<?= $dat['id'] ?>" class='btn btn-danger'>Delete</a>
+														<?php
+														if ($_SESSION['role'] == 'Admin') {
+															echo " 
+															<a href='../controllers/data.php?delete=" . $dat['id'] . "' class='btn btn-danger'>Delete</a>
+															";
+														}
+														?>
 													</td>
 												</tr>
 										<?php

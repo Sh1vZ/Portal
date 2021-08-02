@@ -1,6 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
-
+<?php
+session_start();
+if (isset($_SESSION)) {
+  if ($_SESSION['loggedIn'] == true) {
+    if ($_SESSION['role'] != 'Admin') {
+      header('Location:forbidden.php');
+    }
+  } else {
+    header('Location:forbidden.php');
+  }
+}
+?>
 <?php include '../includes/head.php'; ?>
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -40,6 +51,7 @@
                       <th>Username</th>
                       <th>Role</th>
                       <th>Actions</th>
+                      <th>Time</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -55,7 +67,8 @@
                         <tr>
                           <td><?= $dat['username'] ?></td>
                           <td><?= $dat['role'] ?></td>
-                          <td><?=$dat['action']?> </td>
+                          <td><?= $dat['action'] ?> </td>
+                          <td><?= $dat['created_at'] ?> </td>
                         </tr>
                     <?php
                       }
